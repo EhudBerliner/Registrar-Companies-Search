@@ -9,7 +9,7 @@
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="מאגר חברות מלא">
+    <meta name="apple-mobile-web-app-title" content="מאגר חברות">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <style>
@@ -22,234 +22,51 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --danger: #ef4444;
-            --success: #22c55e;
-            --warning: #f59e0b;
             --accent-bg: #f8fafc;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--background);
-            color: var(--text-main);
-            padding: 20px;
-            line-height: 1.5;
-        }
-
-        .app-container {
-            max-width: 850px;
-            margin: 30px auto;
-            background: var(--surface);
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 26px;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .app-version {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 600;
-            background-color: var(--border);
-            color: var(--text-muted);
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .search-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 14px 16px;
-            font-size: 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
-
-        .btn-search {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-search:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .loader-container {
-            display: none;
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            display: none;
-            background-color: #fef2f2;
-            border: 1px solid #fee2e2;
-            color: #991b1b;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .company-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-right: 6px solid var(--primary);
-            padding: 24px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 5px rgb(0 0 0 / 0.02);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 16px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-        }
-
-        .card-header h3 {
-            font-size: 21px;
-            color: var(--text-main);
-        }
-
-        .badge-container {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--background); color: var(--text-main); padding: 20px; line-height: 1.5; }
+        .app-container { max-width: 850px; margin: 30px auto; background: var(--surface); padding: 30px; border-radius: 14px; box-shadow: 0 4px 10px rgb(0 0 0 / 0.08); }
+        header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--border); padding-bottom: 20px; }
+        header h1 { font-size: 26px; color: var(--primary); margin-bottom: 4px; }
+        .app-version { display: inline-block; font-size: 13px; font-weight: bold; background-color: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 12px; margin-bottom: 10px; }
+        header p { font-size: 14px; color: var(--text-muted); }
+        .search-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        .search-input { flex: 1; padding: 14px 16px; font-size: 16px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .search-input:focus { border-color: var(--primary); }
+        .btn-search { background-color: var(--primary); color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .btn-search:hover { background-color: var(--primary-hover); }
+        .loader-container { display: none; text-align: center; margin: 30px 0; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message { display: none; background-color: #fef2f2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #fee2e2; }
+        .company-card { background: var(--surface); border: 1px solid var(--border); border-right: 6px solid var(--primary); padding: 24px; border-radius: 8px; margin-bottom: 24px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+        .card-header h3 { font-size: 21px; color: var(--text-main); }
+        .badge { display: inline-block; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 20px; }
         .badge-active { background-color: #dcfce7; color: #15803d; }
-        .badge-inactive { background-color: #f1f5f9; color: #475569; }
         .badge-danger { background-color: #fee2e2; color: #b91c1c; }
         .badge-gov { background-color: #e0f2fe; color: #0369a1; }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 16px 0 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-right: 3px solid var(--primary);
-            padding-right: 6px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 10px 20px;
-            font-size: 14px;
-            background-color: var(--accent-bg);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        .info-item {
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .info-item strong {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .no-results {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 40px;
-            font-size: 16px;
-        }
+        .section-title { font-size: 15px; font-weight: 700; color: var(--primary); margin: 16px 0 8px 0; border-right: 3px solid var(--primary); padding-right: 8px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 20px; font-size: 14px; background-color: var(--accent-bg); padding: 14px; border-radius: 6px; border: 1px solid var(--border); }
+        .info-item { color: var(--text-muted); }
+        .info-item strong { color: var(--text-main); font-weight: 600; }
+        .full-width { grid-column: 1 / -1; }
+        .no-results { text-align: center; color: var(--text-muted); padding: 40px; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <header>
-        <h1>רשם החברות - פרופיל נתונים מלא</h1>
-        <div class="app-version">גרסה 2.2.0 (מאגר שדות מלא)</div>
-        <p>שאילתת נתונים מקיפה הכוללת זיהוי, סטטוס משפטי, כתובות וקודי מערכת</p>
+        <h1>רשם החברות - פרופיל מלא</h1>
+        <div class="app-version">גרסה 2.3.0 (סנכרון מלא 29 שדות)</div>
+        <p>שאילתת נתונים מקיפה ממאגר data.gov.il</p>
     </header>
 
     <div class="search-group">
-        <input type="text" id="searchInput" class="search-input" placeholder="הזן שם חברה, מספר חברה (ח.פ) או מילת מפתח..." autofocus>
+        <input type="text" id="searchInput" class="search-input" placeholder="הזן שם חברה, מספר ח.פ או מילת מפתח..." autofocus>
         <button onclick="searchCompany()" class="btn-search">חפש</button>
     </div>
 
@@ -257,7 +74,7 @@
 
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
-        <div style="font-size: 14px; color: var(--text-muted);">שולף פרופיל נתונים מורחב משרתי הממשלה...</div>
+        <div style="font-size: 14px; color: var(--text-muted);">מעבד נתונים מול השרת הממשלתי...</div>
     </div>
 
     <div id="results" class="results-list"></div>
@@ -267,25 +84,13 @@
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
-                .then(reg => {
-                    console.log('Service Worker הופעל בהצלחה');
-                    reg.addEventListener('updatefound', () => {
-                        const newWorker = reg.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                window.location.reload();
-                            }
-                        });
-                    });
-                })
-                .catch(err => console.error('רישום ה-SW נכשל:', err));
+                .then(reg => console.log('SW רשום בהצלחה'))
+                .catch(err => console.error('שגיאה ברישום SW:', err));
         });
     }
 
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchCompany();
-        }
+        if (e.key === 'Enter') searchCompany();
     });
 
     async function searchCompany() {
@@ -310,7 +115,7 @@
 
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('שגיאה בתקשורת מול השרת הממשלתי.');
+            if (!response.ok) throw new Error('Network response was not ok');
             
             const data = await response.json();
             const records = data.result.records;
@@ -318,7 +123,7 @@
             loader.style.display = 'none';
 
             if (!records || records.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות תואמות.</div>';
+                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו חברות התואמות לחיפוש שלך.</div>';
                 return;
             }
 
@@ -326,42 +131,45 @@
                 const card = document.createElement('div');
                 card.className = 'company-card';
                 
-                // מיפוי וחילוץ מאובטח של 29 השדות (כולל תמיכה ברווחים / קווים תחתונים)
-                const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
-                const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
-                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || 'אין';
-                const compType = company["סוג תאגיד"] || company["סוג_תאגיד"] || company["סוג חברה"] || company["סוג_חברה"] || 'אין נתון';
-                const compStatus = company["סטטוס חברה"] || company["סטטוס_חברה"] || 'אין נתון';
-                const compDesc = company["תיאור חברה"] || company["תאור חברה"] || company["תיאור_חברה"] || company["תאור_חברה"] || 'אין תיאור';
-                const compGoal = company["מטרת החברה"] || company["מטרת_החברה"] || 'לא צוין';
-                const compDate = company["תאריך התאגדות"] || company["תאריך_התאגדות"] || 'אין נתון';
-                const isGov = company["חברה ממשלתית"] || company["חברה_ממשלתית"] || 'לא';
-                const limitations = company["מגבלות"] || 'אין מגבלות רשומות';
-                const isViolator = company["מפרה"] || company["מפרה חוק"] || company["מפרה_חוק"] || 'לא';
-                const lastReportYear = company["שנה אחרונה של דוח שנתי"] || company["שנה_אחרונה_של_דוח_שנתי"] || 'לא הוגש / אין נתון';
-                
-                // שדות כתובת ומענה
-                const cityName = company["שם עיר"] || company["יישוב"] || company["ישוב"] || 'לא צוין';
-                const streetName = company["שם רחוב"] || company["רחוב"] || 'לא צוין';
-                const houseNum = company["מספר בית"] || company["מספר_בית"] || '';
-                const zipCode = company["מיקוד"] || 'אין';
-                const poBox = company["ת.ד."] || company["תא דואר"] || company["תא_דואר"] || 'אין';
-                const country = company["מדינה"] || 'ישראל';
-                const careOf = company["אצל"] || 'אין';
-                
-                // תת סטטוס וקודים פנימיים
-                const subStatus = company["תת סטטוס"] || company["תת_סטטוס"] || 'אין';
-                const codeStatus = company["קוד סטטוס חברה"] || company["קוד_סטטוס_חברה"] || 'אין נתון';
-                const codeType = company["קוד סוג חברה"] || company["קוד_סוג_חברה"] || 'אין נתון';
-                const codeClassification = company["קוד סיווג חברה"] || company["קוד_סיווג_חברה"] || 'אין נתון';
-                const codeGoal = company["קוד מטרת החברה"] || company["קוד_מטרת_החברה"] || 'אין נתון';
-                const codeLimitation = company["קוד מגבלה"] || company["קוד_מגבלה"] || 'אין נתון';
-                const codeViolator = company["קוד חברה מפרה"] || company["קוד_חברה_מפרה"] || 'אין נתון';
-                const codeCity = company["קוד ישוב"] || company["קוד_ישוב"] || 'אין נתון';
-                const codeStreet = company["קוד רחוב"] || company["קוד_רחוב"] || 'אין נתון';
-                const codeCountry = company["קוד מדינה"] || company["קוד_מדינה"] || 'אין נתון';
+                // פונקציית עזר לשליפת השדות בצורה בטוחה (מטפלת במקרי Null/Undefined)
+                const getField = (key) => company[key] || company[key.replace(/ /g, "_")] || 'אין נתון';
 
-                // עיבוד תגיות סטטוס עליונות
+                // --- 1. זיהוי בסיסי ---
+                const compId = getField("מספר חברה");
+                const compName = getField("שם חברה");
+                const engName = getField("שם באנגלית");
+                const compType = company["סוג תאגיד"] || company["סוג_תאגיד"] || company["סוג חברה"] || 'אין נתון';
+                const compStatus = getField("סטטוס חברה");
+                const compDesc = company["תיאור חברה"] || company["תאור חברה"] || 'אין נתון';
+                const compGoal = getField("מטרת החברה");
+                const compDate = getField("תאריך התאגדות");
+                const isGov = getField("חברה ממשלתית");
+                const limitations = getField("מגבלות");
+                const isViolator = company["מפרה"] || company["מפרה חוק"] || 'אין נתון';
+                const lastReportYear = getField("שנה אחרונה של דוח שנתי");
+                
+                // --- 2. כתובות ---
+                const cityName = company["שם עיר"] || company["יישוב"] || 'אין נתון';
+                const streetName = company["שם רחוב"] || company["רחוב"] || 'אין נתון';
+                const houseNum = getField("מספר בית");
+                const zipCode = getField("מיקוד");
+                const poBox = company["ת.ד."] || company["תא דואר"] || 'אין נתון';
+                const country = getField("מדינה");
+                const careOf = getField("אצל");
+                
+                // --- 3. קודים ותת-סטטוס ---
+                const subStatus = getField("תת סטטוס");
+                const codeStatus = getField("קוד סטטוס חברה");
+                const codeType = getField("קוד סוג חברה");
+                const codeClassification = getField("קוד סיווג חברה");
+                const codeGoal = getField("קוד מטרת החברה");
+                const codeLimitation = getField("קוד מגבלה");
+                const codeViolator = getField("קוד חברה מפרה");
+                const codeCity = getField("קוד ישוב");
+                const codeStreet = getField("קוד רחוב");
+                const codeCountry = getField("קוד מדינה");
+
+                // קביעת צבעי תגיות
                 let statusClass = 'badge-inactive';
                 if (compStatus.includes('פעילה')) statusClass = 'badge-active';
                 if (isViolator.includes('כן') || isViolator.includes('מפרה')) statusClass = 'badge-danger';
@@ -370,50 +178,47 @@
                     <div class="card-header">
                         <div>
                             <h3>${compName}</h3>
-                            <span style="font-size:13px; color:var(--text-muted); display:block; margin-top:2px;">שם באנגלית: ${engName}</span>
+                            ${engName !== 'אין נתון' ? `<span style="font-size:13px; color:var(--text-muted);">שם באנגלית: ${engName}</span>` : ''}
                         </div>
-                        <div class="badge-container">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                             <span class="badge ${statusClass}">${compStatus}</span>
-                            ${isViolator.includes('כן') || isViolator.includes('חברה מפרה') ? '<span class="badge badge-danger">חברה מפרה חוק</span>' : ''}
-                            ${isGov.includes('כן') || isGov.includes('חברה ממשלתית') ? '<span class="badge badge-gov">חברה ממשלתית</span>' : ''}
+                            ${isViolator.includes('כן') ? '<span class="badge badge-danger">מפרה חוק</span>' : ''}
+                            ${isGov.includes('כן') ? '<span class="badge badge-gov">ממשלתית</span>' : ''}
                         </div>
                     </div>
                     
                     <div class="section-title">פרטי זיהוי וסטטוס</div>
                     <div class="info-grid">
-                        <div class="info-item"><strong>מספר חברה / ח.פ:</strong> ${compId}</div>
+                        <div class="info-item"><strong>מספר חברה:</strong> ${compId}</div>
                         <div class="info-item"><strong>תאריך התאגדות:</strong> ${compDate}</div>
                         <div class="info-item"><strong>סוג תאגיד:</strong> ${compType}</div>
                         <div class="info-item"><strong>תת סטטוס:</strong> ${subStatus}</div>
-                        <div class="info-item"><strong>דוח שנתי אחרון (שנה):</strong> ${lastReportYear}</div>
+                        <div class="info-item"><strong>שנת דוח אחרון:</strong> ${lastReportYear}</div>
                         <div class="info-item"><strong>מפרה:</strong> ${isViolator}</div>
                         <div class="info-item full-width"><strong>תיאור חברה:</strong> ${compDesc}</div>
-                    </div>
-
-                    <div class="section-title">מאפייני התאגיד ומגבלות</div>
-                    <div class="info-grid">
                         <div class="info-item full-width"><strong>מטרת החברה:</strong> ${compGoal}</div>
                         <div class="info-item full-width"><strong>מגבלות:</strong> ${limitations}</div>
                     </div>
 
-                    <div class="section-title">כתובת רשמית ומענה</div>
+                    <div class="section-title">כתובת ומענה רשמי</div>
                     <div class="info-grid">
-                        <div class="info-item"><strong>שם עיר / יישוב:</strong> ${cityName}</div>
-                        <div class="info-item"><strong>שם רחוב:</strong> ${streetName} ${houseNum}</div>
+                        <div class="info-item"><strong>עיר / יישוב:</strong> ${cityName}</div>
+                        <div class="info-item"><strong>רחוב:</strong> ${streetName}</div>
+                        <div class="info-item"><strong>מספר בית:</strong> ${houseNum !== 'אין נתון' ? houseNum : 'לא צויין'}</div>
                         <div class="info-item"><strong>מיקוד:</strong> ${zipCode}</div>
-                        <div class="info-item"><strong>ת.ד. (תא דואר):</strong> ${poBox}</div>
+                        <div class="info-item"><strong>ת.ד.:</strong> ${poBox}</div>
                         <div class="info-item"><strong>מדינה:</strong> ${country}</div>
-                        <div class="info-item"><strong>אצל (Care Of):</strong> ${careOf}</div>
+                        <div class="info-item"><strong>אצל:</strong> ${careOf}</div>
                     </div>
 
-                    <div class="section-title">קודים פנימיים במערכת</div>
+                    <div class="section-title">קודים מערכתיים</div>
                     <div class="info-grid">
-                        <div class="info-item"><strong>קוד סטטוס חברה:</strong> ${codeStatus}</div>
+                        <div class="info-item"><strong>קוד סטטוס:</strong> ${codeStatus}</div>
                         <div class="info-item"><strong>קוד סוג חברה:</strong> ${codeType}</div>
-                        <div class="info-item"><strong>קוד סיווג חברה:</strong> ${codeClassification}</div>
-                        <div class="info-item"><strong>קוד מטרת החברה:</strong> ${codeGoal}</div>
+                        <div class="info-item"><strong>קוד סיווג:</strong> ${codeClassification}</div>
+                        <div class="info-item"><strong>קוד מטרה:</strong> ${codeGoal}</div>
                         <div class="info-item"><strong>קוד מגבלה:</strong> ${codeLimitation}</div>
-                        <div class="info-item"><strong>קוד חברה מפרה:</strong> ${codeViolator}</div>
+                        <div class="info-item"><strong>קוד מפרה:</strong> ${codeViolator}</div>
                         <div class="info-item"><strong>קוד ישוב:</strong> ${codeCity}</div>
                         <div class="info-item"><strong>קוד רחוב:</strong> ${codeStreet}</div>
                         <div class="info-item"><strong>קוד מדינה:</strong> ${codeCountry}</div>
@@ -424,9 +229,8 @@
 
         } catch (error) {
             loader.style.display = 'none';
-            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מהשרת. ודא שאתה מחובר לאינטרנט ונסה שוב.';
+            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים. נסה שוב.';
             errorDiv.style.display = 'block';
-            console.error(error);
         }
     }
 </script>
