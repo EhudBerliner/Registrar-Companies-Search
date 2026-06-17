@@ -1,11 +1,11 @@
 {
-  "name": "חיפוש רשם החברות הממשלתי",
-  "short_name": "חיפוש חברות",
-  "description": "אפליקציית PWA מהירה לחיפוש ואיתור מידע ממאגר רשם החברות הפתוח",
+  "name": "חיפוש רשם החברות המורחב",
+  "short_name": "רשם החברות",
+  "description": "אפליקציית PWA מהירה המציגה נתונים משפטיים, סטטוס הפרה וכתובות של חברות בישראל",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f8fafc",
+  "background_color": "#f1f5f9",
   "theme_color": "#0284c7",
   "orientation": "portrait-primary",
   "icons": [

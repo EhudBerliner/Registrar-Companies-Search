@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חיפוש רשם החברות - PWA</title>
+    <title>רשם החברות המורחב - PWA</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     
     <!-- iOS Support -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="חיפוש חברות">
+    <meta name="apple-mobile-web-app-title" content="מידע חברות">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <style>
         :root {
             --primary: #0284c7;
             --primary-hover: #0369a1;
-            --background: #f8fafc;
+            --background: #f1f5f9;
             --surface: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --success: #16a34a;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
         }
 
         * {
@@ -32,7 +34,7 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--background);
             color: var(--text-main);
             padding: 20px;
@@ -40,24 +42,25 @@
         }
 
         .app-container {
-            max-width: 650px;
-            margin: 40px auto;
+            max-width: 750px;
+            margin: 30px auto;
             background: var(--surface);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border-radius: 14px;
+            box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
         }
 
         header h1 {
-            font-size: 24px;
+            font-size: 26px;
             color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         header p {
@@ -68,12 +71,12 @@
         .search-group {
             display: flex;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .search-input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 14px 16px;
             font-size: 16px;
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -83,14 +86,14 @@
 
         .search-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         .btn-search {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 16px;
             font-weight: 600;
             border-radius: 8px;
@@ -102,7 +105,6 @@
             background-color: var(--primary-hover);
         }
 
-        /* Loader Style */
         .loader-container {
             display: none;
             text-align: center;
@@ -124,12 +126,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        .loader-text {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* Error Message */
         .error-message {
             display: none;
             background-color: #fef2f2;
@@ -142,41 +138,60 @@
             text-align: center;
         }
 
-        /* Results Container */
-        .results-list {
-            margin-top: 20px;
-        }
-
         .company-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-right: 5px solid var(--primary);
-            padding: 20px;
+            border-right: 6px solid var(--primary);
+            padding: 22px;
             border-radius: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .company-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+            box-shadow: 0 12px 20px -5px rgb(0 0 0 / 0.08);
         }
 
-        .company-card h3 {
-            font-size: 18px;
-            color: var(--text-main);
-            margin-bottom: 12px;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 10px;
         }
+
+        .card-header h3 {
+            font-size: 19px;
+            color: var(--text-main);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .badge-active { background-color: #dcfce7; color: #15803d; }
+        .badge-inactive { background-color: #f1f5f9; color: #475569; }
+        .badge-danger { background-color: #fee2e2; color: #b91c1c; }
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px 20px;
             font-size: 14px;
         }
 
         .info-item {
             color: var(--text-muted);
+            line-height: 1.6;
         }
 
         .info-item strong {
@@ -184,11 +199,15 @@
             font-weight: 600;
         }
 
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
         .no-results {
             text-align: center;
             color: var(--text-muted);
-            padding: 30px;
-            font-size: 15px;
+            padding: 40px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -196,12 +215,12 @@
 
 <div class="app-container">
     <header>
-        <h1>רשם החברות - חיפוש מהיר</h1>
-        <p>ממשק PWA מבוסס נתונים פתוחים מבית Gov.il</p>
+        <h1>רשם החברות - מידע תאגידי מורחב</h1>
+        <p>חיפוש ואיתור מידע מקיף ממאגר הנתונים הממשלתי הפתוח</p>
     </header>
 
     <div class="search-group">
-        <input type="text" id="searchInput" class="search-input" placeholder="הזן שם חברה או ח.פ..." autofocus>
+        <input type="text" id="searchInput" class="search-input" placeholder="הזן שם חברה, מספר חברה (ח.פ) או מילת מפתח..." autofocus>
         <button onclick="searchCompany()" class="btn-search">חפש</button>
     </div>
 
@@ -209,23 +228,21 @@
 
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
-        <div class="loader-text">מבצע קריאת API ומעבד נתונים...</div>
+        <div style="font-size: 14px; color: var(--text-muted);">מבצע שליפת נתונים מורחבים מ-Gov.il...</div>
     </div>
 
     <div id="results" class="results-list"></div>
 </div>
 
 <script>
-    // רישום ה-Service Worker בצורה בטוחה ותואמת נתיבי GitHub Pages
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker הופעל בהצלחה בטווח:', reg.scope))
-                .catch(err => console.error('רישום ה-Service Worker נכשל:', err));
+                .then(reg => console.log('Service Worker Registered scope:', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
         });
     }
 
-    // האזנה למקש Enter בתיבת החיפוש
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             searchCompany();
@@ -238,26 +255,23 @@
         const loader = document.getElementById('loader');
         const errorDiv = document.getElementById('errorMessage');
         
-        // איפוס ממשק
         resultsDiv.innerHTML = '';
         errorDiv.style.display = 'none';
-        errorDiv.innerText = '';
 
         if (!query) {
-            errorDiv.innerText = 'אנא הזן ערך לחיפוש (שם חברה או מספר ח.פ).';
+            errorDiv.innerText = 'אנא הזן שם חברה, מספר ח.פ או מילת מפתח לחיפוש.';
             errorDiv.style.display = 'block';
             return;
         }
 
         loader.style.display = 'block';
 
-        // ה-Resource ID המעודכן והתקין של מאגר החברות
         const resourceId = 'f004176c-b85f-4542-8901-7b3176f9a054';
         const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=${resourceId}&q=${encodeURIComponent(query)}`;
 
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('שגיאה במענה מהשרת הממשלתי.');
+            if (!response.ok) throw new Error('שגיאה בתקשורת מול השרת הממשלתי.');
             
             const data = await response.json();
             const records = data.result.records;
@@ -265,7 +279,7 @@
             loader.style.display = 'none';
 
             if (!records || records.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו חברות תואמות לנתוני החיפוש.</div>';
+                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות התואמות לחיפוש שלך.</div>';
                 return;
             }
 
@@ -273,21 +287,51 @@
                 const card = document.createElement('div');
                 card.className = 'company-card';
                 
-                // מיפוי שדות דינמי למניעת שבירה עקב שינויי כותרות במאגר (תמיכה ברווחים או קו תחתון)
+                // שליפת שדות גמישה (תמיכה ברווחים או קו תחתון)
                 const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
+                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || '';
                 const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
                 const compStatus = company["סטטוס חברה"] || company["סטטוס_חברה"] || 'אין נתון';
                 const compDate = company["תאריך התאגדות"] || company["תאריך_התאגדות"] || 'אין נתון';
-                const compType = company["סוג חברה"] || company["סוג_חברה"] || company["תת סוג"] || 'אין נתון';
-                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || '';
+                const compType = company["סוג חברה"] || company["סוג_חברה"] || 'אין נתון';
+                const compSubType = company["תת סוג"] || company["תת_סוג"] || 'אין נתון';
+                const compGoal = company["מטרת החברה"] || company["מטרת_החברה"] || 'לא צוין';
+                const isViolator = company["מפרה חוק"] || company["מפרה_חוק"] || 'לא';
+                
+                // פרטי כתובת מורחבים
+                const city = company["יישוב"] || company["ישוב"] || '';
+                const street = company["רחוב"] || '';
+                const houseNum = company["מספר בית"] || company["מספר_בית"] || '';
+                const zip = company["מיקוד"] || '';
+                const poBox = company["תא דואר"] || company["תא_דואר"] || '';
+                
+                let fullAddress = 'לא צוינה כתובת רשמית';
+                if (city || street) {
+                    fullAddress = `${street} ${houseNum}, ${city} ${zip ? `(מיקוד: ${zip})` : ''} ${poBox ? `[ת"ד: ${poBox}]` : ''}`.trim();
+                }
+
+                // התאמת תגית סטטוס/הפרה
+                let statusBadgeClass = 'badge-inactive';
+                if (compStatus.includes('פעילה')) statusBadgeClass = 'badge-active';
+                if (isViolator.includes('כן') || isViolator.includes('מפרה')) statusBadgeClass = 'badge-danger';
 
                 card.innerHTML = `
-                    <h3>${compName} ${engName ? `(${engName})` : ''}</h3>
+                    <div class="card-header">
+                        <div>
+                            <h3>${compName}</h3>
+                            ${engName ? `<span style="font-size:13px; color:var(--text-muted); display:block; margin-top:2px;">${engName}</span>` : ''}
+                        </div>
+                        <span class="badge ${statusBadgeClass}">
+                            ${compStatus} ${isViolator.includes('כן') ? '| מפרה חוק' : ''}
+                        </span>
+                    </div>
                     <div class="info-grid">
-                        <div class="info-item"><strong>ח.פ / מספר חברה:</strong> ${compId}</div>
-                        <div class="info-item"><strong>סטטוס:</strong> ${compStatus}</div>
+                        <div class="info-item"><strong>ח.פ / מספר תאגיד:</strong> ${compId}</div>
                         <div class="info-item"><strong>תאריך התאגדות:</strong> ${compDate}</div>
                         <div class="info-item"><strong>סוג ישות:</strong> ${compType}</div>
+                        <div class="info-item"><strong>תת סוג:</strong> ${compSubType}</div>
+                        <div class="info-item full-width"><strong>כתובת רשומה:</strong> ${fullAddress}</div>
+                        <div class="info-item full-width"><strong>מטרת החברה:</strong> ${compGoal}</div>
                     </div>
                 `;
                 resultsDiv.appendChild(card);
@@ -295,9 +339,9 @@
 
         } catch (error) {
             loader.style.display = 'none';
-            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מה-API. ודא שאתה מחובר לרשת ונסה שוב.';
+            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מהשרת. ודא שאתה מחובר לאינטרנט ונסה שוב.';
             errorDiv.style.display = 'block';
-            console.error('Fetch Error:', error);
+            console.error(error);
         }
     }
 </script>
