@@ -7,7 +7,6 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     
-    <!-- iOS Support -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="מידע חברות">
@@ -60,7 +59,18 @@
         header h1 {
             font-size: 26px;
             color: var(--primary);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+        }
+
+        .app-version {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: var(--border);
+            color: var(--text-muted);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
         }
 
         header p {
@@ -216,6 +226,7 @@
 <div class="app-container">
     <header>
         <h1>רשם החברות - מידע תאגידי מורחב</h1>
+        <div class="app-version">גרסה 2.1.0 (עדכון מורחב)</div>
         <p>חיפוש ואיתור מידע מקיף ממאגר הנתונים הממשלתי הפתוח</p>
     </header>
 
@@ -235,11 +246,25 @@
 </div>
 
 <script>
+    // רישום ה-Service Worker וניהול רענון אוטומטי בעת עדכון גרסה
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker Registered scope:', reg.scope))
-                .catch(err => console.error('Service Worker registration failed:', err));
+                .then(reg => {
+                    console.log('Service Worker רשום בהצלחה');
+                    
+                    // זיהוי אם יש Service Worker חדש שממתין, והפעלתו מיד
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('נמצא קוד חדש - מבצע רענון לעדכון האפליקציה...');
+                                window.location.reload();
+                            }
+                        });
+                    });
+                })
+                .catch(err => console.error('רישום ה-SW נכשל:', err));
         });
     }
 
@@ -287,7 +312,7 @@
                 const card = document.createElement('div');
                 card.className = 'company-card';
                 
-                // שליפת שדות גמישה (תמיכה ברווחים או קו תחתון)
+                // שליפת שדות מותאמת לשמות העמודות העדכניים במאגר
                 const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
                 const engName = company["שם באנגלית"] || company["שם_באנגלית"] || '';
                 const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
@@ -298,7 +323,7 @@
                 const compGoal = company["מטרת החברה"] || company["מטרת_החברה"] || 'לא צוין';
                 const isViolator = company["מפרה חוק"] || company["מפרה_חוק"] || 'לא';
                 
-                // פרטי כתובת מורחבים
+                // עיבוד פרטי כתובת מלאים
                 const city = company["יישוב"] || company["ישוב"] || '';
                 const street = company["רחוב"] || '';
                 const houseNum = company["מספר בית"] || company["מספר_בית"] || '';
@@ -310,7 +335,7 @@
                     fullAddress = `${street} ${houseNum}, ${city} ${zip ? `(מיקוד: ${zip})` : ''} ${poBox ? `[ת"ד: ${poBox}]` : ''}`.trim();
                 }
 
-                // התאמת תגית סטטוס/הפרה
+                // הגדרת קלאס עיצובי לפי סטטוס
                 let statusBadgeClass = 'badge-inactive';
                 if (compStatus.includes('פעילה')) statusBadgeClass = 'badge-active';
                 if (isViolator.includes('כן') || isViolator.includes('מפרה')) statusBadgeClass = 'badge-danger';
