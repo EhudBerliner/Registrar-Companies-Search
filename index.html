@@ -291,4 +291,144 @@
     async function searchCompany() {
         const query = document.getElementById('searchInput').value.trim();
         const resultsDiv = document.getElementById('results');
-        const loader = document.
+        const loader = document.getElementById('loader');
+        const errorDiv = document.getElementById('errorMessage');
+        
+        resultsDiv.innerHTML = '';
+        errorDiv.style.display = 'none';
+
+        if (!query) {
+            errorDiv.innerText = 'אנא הזן ערך לחיפוש.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        loader.style.display = 'block';
+
+        const resourceId = 'f004176c-b85f-4542-8901-7b3176f9a054';
+        const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=${resourceId}&q=${encodeURIComponent(query)}`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('שגיאה בתקשורת מול השרת הממשלתי.');
+            
+            const data = await response.json();
+            const records = data.result.records;
+
+            loader.style.display = 'none';
+
+            if (!records || records.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות תואמות.</div>';
+                return;
+            }
+
+            records.forEach(company => {
+                const card = document.createElement('div');
+                card.className = 'company-card';
+                
+                // מיפוי וחילוץ מאובטח של 29 השדות (כולל תמיכה ברווחים / קווים תחתונים)
+                const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
+                const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
+                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || 'אין';
+                const compType = company["סוג תאגיד"] || company["סוג_תאגיד"] || company["סוג חברה"] || company["סוג_חברה"] || 'אין נתון';
+                const compStatus = company["סטטוס חברה"] || company["סטטוס_חברה"] || 'אין נתון';
+                const compDesc = company["תיאור חברה"] || company["תאור חברה"] || company["תיאור_חברה"] || company["תאור_חברה"] || 'אין תיאור';
+                const compGoal = company["מטרת החברה"] || company["מטרת_החברה"] || 'לא צוין';
+                const compDate = company["תאריך התאגדות"] || company["תאריך_התאגדות"] || 'אין נתון';
+                const isGov = company["חברה ממשלתית"] || company["חברה_ממשלתית"] || 'לא';
+                const limitations = company["מגבלות"] || 'אין מגבלות רשומות';
+                const isViolator = company["מפרה"] || company["מפרה חוק"] || company["מפרה_חוק"] || 'לא';
+                const lastReportYear = company["שנה אחרונה של דוח שנתי"] || company["שנה_אחרונה_של_דוח_שנתי"] || 'לא הוגש / אין נתון';
+                
+                // שדות כתובת ומענה
+                const cityName = company["שם עיר"] || company["יישוב"] || company["ישוב"] || 'לא צוין';
+                const streetName = company["שם רחוב"] || company["רחוב"] || 'לא צוין';
+                const houseNum = company["מספר בית"] || company["מספר_בית"] || '';
+                const zipCode = company["מיקוד"] || 'אין';
+                const poBox = company["ת.ד."] || company["תא דואר"] || company["תא_דואר"] || 'אין';
+                const country = company["מדינה"] || 'ישראל';
+                const careOf = company["אצל"] || 'אין';
+                
+                // תת סטטוס וקודים פנימיים
+                const subStatus = company["תת סטטוס"] || company["תת_סטטוס"] || 'אין';
+                const codeStatus = company["קוד סטטוס חברה"] || company["קוד_סטטוס_חברה"] || 'אין נתון';
+                const codeType = company["קוד סוג חברה"] || company["קוד_סוג_חברה"] || 'אין נתון';
+                const codeClassification = company["קוד סיווג חברה"] || company["קוד_סיווג_חברה"] || 'אין נתון';
+                const codeGoal = company["קוד מטרת החברה"] || company["קוד_מטרת_החברה"] || 'אין נתון';
+                const codeLimitation = company["קוד מגבלה"] || company["קוד_מגבלה"] || 'אין נתון';
+                const codeViolator = company["קוד חברה מפרה"] || company["קוד_חברה_מפרה"] || 'אין נתון';
+                const codeCity = company["קוד ישוב"] || company["קוד_ישוב"] || 'אין נתון';
+                const codeStreet = company["קוד רחוב"] || company["קוד_רחוב"] || 'אין נתון';
+                const codeCountry = company["קוד מדינה"] || company["קוד_מדינה"] || 'אין נתון';
+
+                // עיבוד תגיות סטטוס עליונות
+                let statusClass = 'badge-inactive';
+                if (compStatus.includes('פעילה')) statusClass = 'badge-active';
+                if (isViolator.includes('כן') || isViolator.includes('מפרה')) statusClass = 'badge-danger';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <h3>${compName}</h3>
+                            <span style="font-size:13px; color:var(--text-muted); display:block; margin-top:2px;">שם באנגלית: ${engName}</span>
+                        </div>
+                        <div class="badge-container">
+                            <span class="badge ${statusClass}">${compStatus}</span>
+                            ${isViolator.includes('כן') || isViolator.includes('חברה מפרה') ? '<span class="badge badge-danger">חברה מפרה חוק</span>' : ''}
+                            ${isGov.includes('כן') || isGov.includes('חברה ממשלתית') ? '<span class="badge badge-gov">חברה ממשלתית</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="section-title">פרטי זיהוי וסטטוס</div>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>מספר חברה / ח.פ:</strong> ${compId}</div>
+                        <div class="info-item"><strong>תאריך התאגדות:</strong> ${compDate}</div>
+                        <div class="info-item"><strong>סוג תאגיד:</strong> ${compType}</div>
+                        <div class="info-item"><strong>תת סטטוס:</strong> ${subStatus}</div>
+                        <div class="info-item"><strong>דוח שנתי אחרון (שנה):</strong> ${lastReportYear}</div>
+                        <div class="info-item"><strong>מפרה:</strong> ${isViolator}</div>
+                        <div class="info-item full-width"><strong>תיאור חברה:</strong> ${compDesc}</div>
+                    </div>
+
+                    <div class="section-title">מאפייני התאגיד ומגבלות</div>
+                    <div class="info-grid">
+                        <div class="info-item full-width"><strong>מטרת החברה:</strong> ${compGoal}</div>
+                        <div class="info-item full-width"><strong>מגבלות:</strong> ${limitations}</div>
+                    </div>
+
+                    <div class="section-title">כתובת רשמית ומענה</div>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>שם עיר / יישוב:</strong> ${cityName}</div>
+                        <div class="info-item"><strong>שם רחוב:</strong> ${streetName} ${houseNum}</div>
+                        <div class="info-item"><strong>מיקוד:</strong> ${zipCode}</div>
+                        <div class="info-item"><strong>ת.ד. (תא דואר):</strong> ${poBox}</div>
+                        <div class="info-item"><strong>מדינה:</strong> ${country}</div>
+                        <div class="info-item"><strong>אצל (Care Of):</strong> ${careOf}</div>
+                    </div>
+
+                    <div class="section-title">קודים פנימיים במערכת</div>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>קוד סטטוס חברה:</strong> ${codeStatus}</div>
+                        <div class="info-item"><strong>קוד סוג חברה:</strong> ${codeType}</div>
+                        <div class="info-item"><strong>קוד סיווג חברה:</strong> ${codeClassification}</div>
+                        <div class="info-item"><strong>קוד מטרת החברה:</strong> ${codeGoal}</div>
+                        <div class="info-item"><strong>קוד מגבלה:</strong> ${codeLimitation}</div>
+                        <div class="info-item"><strong>קוד חברה מפרה:</strong> ${codeViolator}</div>
+                        <div class="info-item"><strong>קוד ישוב:</strong> ${codeCity}</div>
+                        <div class="info-item"><strong>קוד רחוב:</strong> ${codeStreet}</div>
+                        <div class="info-item"><strong>קוד מדינה:</strong> ${codeCountry}</div>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+
+        } catch (error) {
+            loader.style.display = 'none';
+            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מהשרת. ודא שאתה מחובר לאינטרנט ונסה שוב.';
+            errorDiv.style.display = 'block';
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>
