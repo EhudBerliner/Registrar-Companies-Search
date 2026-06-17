@@ -3,104 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חיפוש רשם החברות PWA</title>
+    <title>חיפוש רשם החברות - PWA</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0056B3">
+    <meta name="theme-color" content="#0284c7">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="חיפוש חברות">
     <link rel="apple-touch-icon" href="icon-192.png">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f6f9;
-            color: #333;
+            padding: 0;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.5;
         }
-        h1 {
+
+        .app-container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+
+        header {
             text-align: center;
-            color: #0056B3;
+            margin-bottom: 30px;
         }
-        .search-box {
+
+        header h1 {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .search-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
-        input[type="text"] {
+
+        .search-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px 16px;
             font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #0056B3;
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .btn-search {
+            background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
-        button:hover {
-            background-color: #004494;
+
+        .btn-search:hover {
+            background-color: var(--primary-hover);
         }
-        .loader {
+
+        /* Loader Style */
+        .loader-container {
             display: none;
             text-align: center;
-            margin: 20px 0;
-            font-weight: bold;
+            margin: 30px 0;
         }
-        .results {
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Results Container */
+        .results-list {
             margin-top: 20px;
         }
+
         .company-card {
-            background: #f8f9fa;
-            border-right: 4px solid #0056B3;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 0 4px 4px 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-right: 5px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+
+        .company-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+        }
+
         .company-card h3 {
-            margin: 0 0 10px 0;
-            color: #111;
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 12px;
         }
-        .error {
-            color: red;
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .info-item {
+            color: var(--text-muted);
+        }
+
+        .info-item strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .no-results {
             text-align: center;
+            color: var(--text-muted);
+            padding: 30px;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>חיפוש חברות - רשם החברות</h1>
-    
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="הכנס שם חברה או מספר חברה (ח.פ)...">
-        <button onclick="searchCompany()">חפש</button>
+<div class="app-container">
+    <header>
+        <h1>רשם החברות - חיפוש מהיר</h1>
+        <p>ממשק PWA מבוסס נתונים פתוחים מבית Gov.il</p>
+    </header>
+
+    <div class="search-group">
+        <input type="text" id="searchInput" class="search-input" placeholder="הזן שם חברה או ח.פ..." autofocus>
+        <button onclick="searchCompany()" class="btn-search">חפש</button>
     </div>
 
-    <div id="loader" class="loader">מחשב נתונים ומחפש...</div>
-    <div id="errorMessage" class="error"></div>
-    <div id="results" class="results"></div>
+    <div id="errorMessage" class="error-message"></div>
+
+    <div id="loader" class="loader-container">
+        <div class="spinner"></div>
+        <div class="loader-text">מבצע קריאת API ומעבד נתונים...</div>
+    </div>
+
+    <div id="results" class="results-list"></div>
 </div>
 
 <script>
-    // רישום ה-Service Worker לטובת PWA
+    // רישום ה-Service Worker בצורה בטוחה ותואמת נתיבי GitHub Pages
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registered successfully.', reg))
-                .catch(err => console.log('Service Worker registration failed:', err));
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker הופעל בהצלחה בטווח:', reg.scope))
+                .catch(err => console.error('רישום ה-Service Worker נכשל:', err));
         });
     }
+
+    // האזנה למקש Enter בתיבת החיפוש
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchCompany();
+        }
+    });
 
     async function searchCompany() {
         const query = document.getElementById('searchInput').value.trim();
@@ -108,32 +238,34 @@
         const loader = document.getElementById('loader');
         const errorDiv = document.getElementById('errorMessage');
         
+        // איפוס ממשק
         resultsDiv.innerHTML = '';
+        errorDiv.style.display = 'none';
         errorDiv.innerText = '';
 
         if (!query) {
-            errorDiv.innerText = 'אנא הזן שם חברה או מספר ח.פ';
+            errorDiv.innerText = 'אנא הזן ערך לחיפוש (שם חברה או מספר ח.פ).';
+            errorDiv.style.display = 'block';
             return;
         }
 
         loader.style.display = 'block';
 
-        // שימוש ב-API הפתוח של ממשלת ישראל (מאגר החברות)
-        // מזהה המאגר (resource_id) עבור רשם החברות הוא f004176c-f832-473c-a7a7-5e64e1c53ae8
-        const resourceId = 'f004176c-f832-473c-a7a7-5e64e1c53ae8';
+        // ה-Resource ID המעודכן והתקין של מאגר החברות
+        const resourceId = 'f004176c-b85f-4542-8901-7b3176f9a054';
         const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=${resourceId}&q=${encodeURIComponent(query)}`;
 
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('שגיאה בתקשורת מול השרת');
+            if (!response.ok) throw new Error('שגיאה במענה מהשרת הממשלתי.');
             
             const data = await response.json();
             const records = data.result.records;
 
             loader.style.display = 'none';
 
-            if (records.length === 0) {
-                resultsDiv.innerHTML = '<p>לא נמצאו תוצאות מתאימות.</p>';
+            if (!records || records.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו חברות תואמות לנתוני החיפוש.</div>';
                 return;
             }
 
@@ -141,21 +273,31 @@
                 const card = document.createElement('div');
                 card.className = 'company-card';
                 
-                // השדות מותאמים למבנה הנתונים הרשמי של רשם החברות ב-data.gov.il
+                // מיפוי שדות דינמי למניעת שבירה עקב שינויי כותרות במאגר (תמיכה ברווחים או קו תחתון)
+                const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
+                const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
+                const compStatus = company["סטטוס חברה"] || company["סטטוס_חברה"] || 'אין נתון';
+                const compDate = company["תאריך התאגדות"] || company["תאריך_התאגדות"] || 'אין נתון';
+                const compType = company["סוג חברה"] || company["סוג_חברה"] || company["תת סוג"] || 'אין נתון';
+                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || '';
+
                 card.innerHTML = `
-                    <h3>${company["שם חברה"] || 'שם לא ידוע'}</h3>
-                    <p><strong>מספר חברה (ח.פ):</strong> ${company["מספר חברה"] || 'אין נתון'}</p>
-                    <p><strong>סטטוס חברה:</strong> ${company["סטטוס חברה"] || 'אין נתון'}</p>
-                    <p><strong>תאריך התאגדות:</strong> ${company["תאריך התאגדות"] || 'אין נתון'}</p>
-                    <p><strong>סוג חברה:</strong> ${company["תת סוג"] || company["סוג חברה"] || 'אין נתון'}</p>
+                    <h3>${compName} ${engName ? `(${engName})` : ''}</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>ח.פ / מספר חברה:</strong> ${compId}</div>
+                        <div class="info-item"><strong>סטטוס:</strong> ${compStatus}</div>
+                        <div class="info-item"><strong>תאריך התאגדות:</strong> ${compDate}</div>
+                        <div class="info-item"><strong>סוג ישות:</strong> ${compType}</div>
+                    </div>
                 `;
                 resultsDiv.appendChild(card);
             });
 
         } catch (error) {
             loader.style.display = 'none';
-            errorDiv.innerText = 'אירעה שגיאה בטעינת הנתונים. ודא שאתה מחובר לאינטרנט ונסה שוב.';
-            console.error(error);
+            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מה-API. ודא שאתה מחובר לרשת ונסה שוב.';
+            errorDiv.style.display = 'block';
+            console.error('Fetch Error:', error);
         }
     }
 </script>
