@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשם החברות המורחב - PWA</title>
+    <title>רשם החברות המלא - PWA</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="מידע חברות">
+    <meta name="apple-mobile-web-app-title" content="מאגר חברות מלא">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <style>
@@ -24,6 +24,7 @@
             --danger: #ef4444;
             --success: #22c55e;
             --warning: #f59e0b;
+            --accent-bg: #f8fafc;
         }
 
         * {
@@ -41,7 +42,7 @@
         }
 
         .app-container {
-            max-width: 750px;
+            max-width: 850px;
             margin: 30px auto;
             background: var(--surface);
             padding: 30px;
@@ -152,15 +153,10 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-right: 6px solid var(--primary);
-            padding: 22px;
+            padding: 24px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .company-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px -5px rgb(0 0 0 / 0.08);
+            margin-bottom: 24px;
+            box-shadow: 0 2px 5px rgb(0 0 0 / 0.02);
         }
 
         .card-header {
@@ -169,14 +165,20 @@
             align-items: flex-start;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 14px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 10px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
         }
 
         .card-header h3 {
-            font-size: 19px;
+            font-size: 21px;
             color: var(--text-main);
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .badge {
@@ -191,17 +193,33 @@
         .badge-active { background-color: #dcfce7; color: #15803d; }
         .badge-inactive { background-color: #f1f5f9; color: #475569; }
         .badge-danger { background-color: #fee2e2; color: #b91c1c; }
+        .badge-gov { background-color: #e0f2fe; color: #0369a1; }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 16px 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 3px solid var(--primary);
+            padding-right: 6px;
+        }
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px 20px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px 20px;
             font-size: 14px;
+            background-color: var(--accent-bg);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
         }
 
         .info-item {
             color: var(--text-muted);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .info-item strong {
@@ -225,9 +243,9 @@
 
 <div class="app-container">
     <header>
-        <h1>רשם החברות - מידע תאגידי מורחב</h1>
-        <div class="app-version">גרסה 2.1.0 (עדכון מורחב)</div>
-        <p>חיפוש ואיתור מידע מקיף ממאגר הנתונים הממשלתי הפתוח</p>
+        <h1>רשם החברות - פרופיל נתונים מלא</h1>
+        <div class="app-version">גרסה 2.2.0 (מאגר שדות מלא)</div>
+        <p>שאילתת נתונים מקיפה הכוללת זיהוי, סטטוס משפטי, כתובות וקודי מערכת</p>
     </header>
 
     <div class="search-group">
@@ -239,26 +257,22 @@
 
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
-        <div style="font-size: 14px; color: var(--text-muted);">מבצע שליפת נתונים מורחבים מ-Gov.il...</div>
+        <div style="font-size: 14px; color: var(--text-muted);">שולף פרופיל נתונים מורחב משרתי הממשלה...</div>
     </div>
 
     <div id="results" class="results-list"></div>
 </div>
 
 <script>
-    // רישום ה-Service Worker וניהול רענון אוטומטי בעת עדכון גרסה
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
                 .then(reg => {
-                    console.log('Service Worker רשום בהצלחה');
-                    
-                    // זיהוי אם יש Service Worker חדש שממתין, והפעלתו מיד
+                    console.log('Service Worker הופעל בהצלחה');
                     reg.addEventListener('updatefound', () => {
                         const newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('נמצא קוד חדש - מבצע רענון לעדכון האפליקציה...');
                                 window.location.reload();
                             }
                         });
@@ -277,98 +291,4 @@
     async function searchCompany() {
         const query = document.getElementById('searchInput').value.trim();
         const resultsDiv = document.getElementById('results');
-        const loader = document.getElementById('loader');
-        const errorDiv = document.getElementById('errorMessage');
-        
-        resultsDiv.innerHTML = '';
-        errorDiv.style.display = 'none';
-
-        if (!query) {
-            errorDiv.innerText = 'אנא הזן שם חברה, מספר ח.פ או מילת מפתח לחיפוש.';
-            errorDiv.style.display = 'block';
-            return;
-        }
-
-        loader.style.display = 'block';
-
-        const resourceId = 'f004176c-b85f-4542-8901-7b3176f9a054';
-        const url = `https://data.gov.il/api/3/action/datastore_search?resource_id=${resourceId}&q=${encodeURIComponent(query)}`;
-
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('שגיאה בתקשורת מול השרת הממשלתי.');
-            
-            const data = await response.json();
-            const records = data.result.records;
-
-            loader.style.display = 'none';
-
-            if (!records || records.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results">לא נמצאו תוצאות התואמות לחיפוש שלך.</div>';
-                return;
-            }
-
-            records.forEach(company => {
-                const card = document.createElement('div');
-                card.className = 'company-card';
-                
-                // שליפת שדות מותאמת לשמות העמודות העדכניים במאגר
-                const compName = company["שם חברה"] || company["שם_חברה"] || 'לא צוין שם';
-                const engName = company["שם באנגלית"] || company["שם_באנגלית"] || '';
-                const compId = company["מספר חברה"] || company["מספר_חברה"] || 'אין נתון';
-                const compStatus = company["סטטוס חברה"] || company["סטטוס_חברה"] || 'אין נתון';
-                const compDate = company["תאריך התאגדות"] || company["תאריך_התאגדות"] || 'אין נתון';
-                const compType = company["סוג חברה"] || company["סוג_חברה"] || 'אין נתון';
-                const compSubType = company["תת סוג"] || company["תת_סוג"] || 'אין נתון';
-                const compGoal = company["מטרת החברה"] || company["מטרת_החברה"] || 'לא צוין';
-                const isViolator = company["מפרה חוק"] || company["מפרה_חוק"] || 'לא';
-                
-                // עיבוד פרטי כתובת מלאים
-                const city = company["יישוב"] || company["ישוב"] || '';
-                const street = company["רחוב"] || '';
-                const houseNum = company["מספר בית"] || company["מספר_בית"] || '';
-                const zip = company["מיקוד"] || '';
-                const poBox = company["תא דואר"] || company["תא_דואר"] || '';
-                
-                let fullAddress = 'לא צוינה כתובת רשמית';
-                if (city || street) {
-                    fullAddress = `${street} ${houseNum}, ${city} ${zip ? `(מיקוד: ${zip})` : ''} ${poBox ? `[ת"ד: ${poBox}]` : ''}`.trim();
-                }
-
-                // הגדרת קלאס עיצובי לפי סטטוס
-                let statusBadgeClass = 'badge-inactive';
-                if (compStatus.includes('פעילה')) statusBadgeClass = 'badge-active';
-                if (isViolator.includes('כן') || isViolator.includes('מפרה')) statusBadgeClass = 'badge-danger';
-
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div>
-                            <h3>${compName}</h3>
-                            ${engName ? `<span style="font-size:13px; color:var(--text-muted); display:block; margin-top:2px;">${engName}</span>` : ''}
-                        </div>
-                        <span class="badge ${statusBadgeClass}">
-                            ${compStatus} ${isViolator.includes('כן') ? '| מפרה חוק' : ''}
-                        </span>
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-item"><strong>ח.פ / מספר תאגיד:</strong> ${compId}</div>
-                        <div class="info-item"><strong>תאריך התאגדות:</strong> ${compDate}</div>
-                        <div class="info-item"><strong>סוג ישות:</strong> ${compType}</div>
-                        <div class="info-item"><strong>תת סוג:</strong> ${compSubType}</div>
-                        <div class="info-item full-width"><strong>כתובת רשומה:</strong> ${fullAddress}</div>
-                        <div class="info-item full-width"><strong>מטרת החברה:</strong> ${compGoal}</div>
-                    </div>
-                `;
-                resultsDiv.appendChild(card);
-            });
-
-        } catch (error) {
-            loader.style.display = 'none';
-            errorDiv.innerText = 'אירעה שגיאה בקבלת הנתונים מהשרת. ודא שאתה מחובר לאינטרנט ונסה שוב.';
-            errorDiv.style.display = 'block';
-            console.error(error);
-        }
-    }
-</script>
-</body>
-</html>
+        const loader = document.
