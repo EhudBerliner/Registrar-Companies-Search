@@ -1,4 +1,4 @@
-const CACHE_NAME = 'company-search-v3';
+const CACHE_NAME = 'company-search-v4'; // החלפת השם תנקה את כל גרסאות העבר
 
 const ASSETS_TO_CACHE = [
   './',
@@ -12,7 +12,7 @@ self.addEventListener('install', event => {
       .then(cache => {
         return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting())
+      .then(() => self.skipWaiting()) // גורם ל-SW החדש להשתלט מיד ללא המתנה
   );
 });
 
@@ -22,17 +22,19 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cache => {
           if (cache !== CACHE_NAME) {
+            console.log('מנקה קאש ישן:', cache);
             return caches.delete(cache);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // הפעלה מיידית של ה-SW על כל הטאבים הפתוחים
   );
 });
 
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
 
+  // נתוני ה-API תמיד יימשכו מהרשת בזמן אמת
   if (requestUrl.hostname.includes('data.gov.il')) {
     event.respondWith(
       fetch(event.request)
@@ -43,6 +45,7 @@ self.addEventListener('fetch', event => {
         })
     );
   } else {
+    // קבצי האפליקציה ייטענו מהקאש למהירות מקסימלית
     event.respondWith(
       caches.match(event.request)
         .then(cachedResponse => {
